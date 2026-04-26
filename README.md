@@ -20,3 +20,4 @@ terraform validate
 ```console
 terraform apply
 ```
+Note: While doing ssh remove .pem from key name.
