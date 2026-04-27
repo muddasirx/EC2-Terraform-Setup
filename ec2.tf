@@ -2,16 +2,16 @@
 # pass those keys as key-pair, which would later be used for ssh
 
 resource aws_key_pair my_key {
-    key_name = "ec2-terraform-key"
-    public_key = file("ec2-terraform-key.pub")
+    key_name = "tf-ec2-key"
+    public_key = file("tf-ec2-key.pub")
 }
 
 # VPC & Security for ec2
 
 resource aws_default_vpc default {}     # Using aws default vpc
 
-resource aws_security_group my_sg {     # Creating security group
-    name = "tf-sg"
+resource aws_security_group new_sg {     # Creating security group
+    name = "tf-new-sg"
     description = "security group added using terraform"
     vpc_id = aws_default_vpc.default.id
 
@@ -51,16 +51,17 @@ resource aws_security_group my_sg {     # Creating security group
 
 resource aws_instance ec2_instance {
     key_name = aws_key_pair.my_key.key_name
-    security_groups = [aws_security_group.my_sg.name]
-    instance_type = "m7i-flex.large"                          # Cpu
-    ami = "ami-080254318c2d8932f"                             # Ubuntu AMI id
+    security_groups = [aws_security_group.new_sg.name]
+    instance_type = var.ec2_instance_type                          # Cpu
+    ami = var.ec2_ami                                              # Ubuntu AMI id
+    user_data = file("install_docker.sh")                          # Run any shell script after creating the instance  
 
     root_block_device {                                       # storage of ec2
-        volume_size = 20
+        volume_size = var.ec2_storage
         volume_type = "gp3"
     }
 
     tags = {
-            Name = "ec2-tag"
+        Name = var.instance_name               # instance name
     }
 }
