@@ -50,7 +50,7 @@ resource aws_security_group new_sg {     # Creating security group
 # Creating ec2 instance
 
 resource aws_instance ec2_instance {
-    count = 1                                                    # Number of instances
+    # count = 1                                                    # Number of instances (Optional argument used when creating multiple instances)
     key_name = aws_key_pair.my_key.key_name
     security_groups = [aws_security_group.new_sg.name]
     instance_type = var.ec2_instance_type                          # Cpu
